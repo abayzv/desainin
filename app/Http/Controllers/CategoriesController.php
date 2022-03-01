@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Storage;
+use App\Models\Category;
 use Illuminate\Http\Request;
-use App\Models\Company;
 
-class CompaniesController extends Controller
+class CategoriesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,8 +14,8 @@ class CompaniesController extends Controller
      */
     public function index()
     {
-        $Companies = Company::paginate('10');
-        return view('companies.index', compact(['Companies']));
+        $categories = Category::paginate(10);
+        return view('category.index', compact(['categories']));
     }
 
     /**
@@ -26,7 +25,7 @@ class CompaniesController extends Controller
      */
     public function create()
     {
-        return view('companies.create');
+        return view('category.create');
     }
 
     /**
@@ -37,24 +36,15 @@ class CompaniesController extends Controller
      */
     public function store(Request $request)
     {
-      $Validated = $request->validate([
-        'file' => 'required|image|max:1024',
-        'name' => 'required'
-      ]);
-      
-      $File = $request->file('file');
-      $FileName = $File->getClientOriginalName();
-      $Upload = Storage::disk('public')->putFileAs('logo', $File, $FileName);
+        $Validated = $request->validate([
+            'name' => 'required'
+        ]);
 
-      Company::create([
-        'name' => $request->name,
-        'logo' => $FileName,
-        'address' => $request->address,
-        'website' => $request->website,
-        'email' => $request->email,
-      ]);
+        Category::create([
+            'name' => $request->name,
+        ]);
 
-      return redirect('/companies');
+        return redirect('/category');
     }
 
     /**
@@ -76,8 +66,8 @@ class CompaniesController extends Controller
      */
     public function edit($id)
     {
-      $Company = Company::find($id);
-      return view('companies.edit', compact(['Company']));
+        $categories = Category::find($id);
+        return view('category.edit', compact(['categories']));
     }
 
     /**
@@ -89,14 +79,10 @@ class CompaniesController extends Controller
      */
     public function update(Request $request, $id)
     {
-       Company::where('id', $id)->update([
-        'name' => $request->name,
-        'logo' => $request->logo,
-        'address' => $request->address,
-        'website' => $request->website,
-        'email' => $request->email,
-      ]);
-      return redirect(route('companies.index'));
+        Category::where('id', $id)->update([
+            'name' => $request->name,
+        ]);
+        return redirect(route('category.index'));
     }
 
     /**
@@ -107,7 +93,7 @@ class CompaniesController extends Controller
      */
     public function destroy($id)
     {
-        Company::where('id', $id)->delete();
-        return redirect('/companies');
+        Category::where('id', $id)->delete();
+        return redirect('/category');
     }
 }

@@ -1,0 +1,13 @@
+.mobile {
+    display: none;
+}
+
+/* responsive mobile query */
+@media only screen and (max-width: 600px) {
+    .mobile {
+        display: unset;
+    }
+    .web {
+        display: none;
+    }
+}
